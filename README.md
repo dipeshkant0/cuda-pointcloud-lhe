@@ -64,7 +64,7 @@ flowchart TD
 ### 2. Approximate KNN via Spatial Hashing
 - **Parallel Bounding-Box Reductions**: OpenMP reductions find global coordinate extrema ($X_{\min}, X_{\max}, \dots$) to establish an optimal 3D voxel grid size.
 - **Prime-Modulo Spatial Hash**: Points are mapped to 3D grid cells and hashed into a 1D index using large coprimes:
-  $$\text{Hash}(i_x, i_y, i_z) = \left((i_x \times 73856093) \oplus (i_y \times 19349663) \oplus (i_z \times 83492791)\right) \pmod{\text{hash\_size}}$$
+  $$\text{Hash}(i_x, i_y, i_z) = \left((i_x \times 73856093) \oplus (i_y \times 19349663) \oplus (i_z \times 83492791)\right) \pmod{\text{HashSize}}$$
 - **Memory Coalescing via Sorting**: Points are sorted on the CPU by hash ID prior to GPU offload, guaranteeing contiguous VRAM access and eliminating scattered global memory reads.
 - **Bounded Neighborhood Search**: GPU threads evaluate only points within the adjacent $3 \times 3 \times 3$ neighboring voxels (27 cells total), reducing distance computations by orders of magnitude.
 
