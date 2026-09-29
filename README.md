@@ -134,26 +134,32 @@ Execution Time Comparison (Seconds - Lower is Better)
 
 ```
 .
-├── Makefile                # Top-level build script (CPU & GPU targets)
+├── Makefile                # Unified build script (CPU & GPU targets)
 ├── .gitignore              # Ignores compiled binaries and runtime data dumps
-├── report.pdf              # Comprehensive technical report
-├── a2.zip                  # Submission archive
-├── a2/                     # CUDA GPU Implementation
-│   ├── makefile            # CUDA compilation script
-│   ├── main.cpp            # GPU pipeline harness
-│   ├── kernels.cuh         # CUDA kernel headers & prototypes
-│   ├── knn.cu              # Exact KNN CUDA kernel
-│   ├── approx_knn.cu       # Approximate KNN CUDA kernel
-│   ├── k_mean.cu           # K-Means clustering CUDA kernel
-│   └── report.pdf
-└── OMP/                    # OpenMP Multi-Core CPU Implementation
-    ├── main.cpp            # CPU OpenMP pipeline
-    ├── seq_omp.cpp         # Sequential baseline
-    ├── dataset_generator.py # Synthetic 3D point cloud generator
-    ├── ground.py           # Ground-truth reference generator
-    ├── mae_loss.py         # Mean Absolute Error verification script
-    ├── verify_kmean.py     # K-Means correctness validator
-    └── match.py            # Output format validator
+├── src/                    # Implementation source code
+│   ├── cuda/               # Massively parallel GPU implementation
+│   │   ├── makefile        # CUDA build configuration
+│   │   ├── main.cpp        # GPU pipeline runner
+│   │   ├── kernels.cuh     # CUDA kernel headers & prototypes
+│   │   ├── knn.cu          # Exact KNN CUDA kernel
+│   │   ├── approx_knn.cu   # Approximate KNN CUDA kernel
+│   │   └── k_mean.cu       # K-Means clustering CUDA kernel
+│   └── omp/                # Multi-core CPU OpenMP implementation
+│       ├── main.cpp        # CPU OpenMP pipeline
+│       └── seq_omp.cpp     # Sequential baseline
+├── scripts/                # Data generation and verification tools
+│   ├── dataset_generator.py # Synthetic 3D point cloud generator
+│   ├── mae_loss.py         # Mean Absolute Error verification script
+│   ├── verify_kmean.py     # K-Means correctness validator
+│   ├── ground.py           # Ground-truth reference generator
+│   └── match.py            # Output format validator
+├── docs/                   # Technical reports & documentation
+│   └── report.pdf          # Full benchmark report submitted for evaluation
+├── data/                   # Reference validation datasets
+│   ├── approx_knn.txt
+│   ├── kmeans_truth.txt
+│   └── python_ground_truth.txt
+└── archive/                # Original submission archive
 ```
 
 ---
@@ -179,7 +185,7 @@ Produces the `omp_lhe` executable.
 ```bash
 make cuda
 ```
-Compiles the CUDA kernels in `a2/` using `nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp`, producing `a2/a2`.
+Compiles the CUDA kernels in `src/cuda/` using `nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp`, producing `src/cuda/a2`.
 
 ### 3. Build All Available Targets
 ```bash
@@ -199,7 +205,7 @@ make clean
 Generate a synthetic 3D point cloud dataset with $N = 100,000$ points, $K = 128$ neighbors, and $t = 50$ iterations:
 
 ```bash
-python3 OMP/dataset_generator.py
+python3 scripts/dataset_generator.py
 ```
 Outputs `input.txt` with format:
 ```text
@@ -222,12 +228,12 @@ Outputs `input.txt` with format:
 
 ### 3. Run CUDA (GPU) Pipeline
 ```bash
-./a2/a2 <input_file> <algorithm>
+./src/cuda/a2 <input_file> <algorithm>
 
 # Examples:
-./a2/a2 input.txt knn
-./a2/a2 input.txt approx_knn
-./a2/a2 input.txt kmeans
+./src/cuda/a2 input.txt knn
+./src/cuda/a2 input.txt approx_knn
+./src/cuda/a2 input.txt kmeans
 ```
 
 Each run writes the enhanced coordinates and equalized intensities to `<algorithm>.txt`.
@@ -239,13 +245,13 @@ Each run writes the enhanced coordinates and equalized intensities to `<algorith
 Compute the Mean Absolute Error (MAE) between Exact KNN and Approximate KNN output files:
 
 ```bash
-python3 OMP/mae_loss.py knn.txt approx_knn.txt
+python3 scripts/mae_loss.py knn.txt approx_knn.txt
 ```
 
 Verify K-Means clustering convergence and histogram validity:
 
 ```bash
-python3 OMP/verify_kmean.py input.txt kmeans.txt
+python3 scripts/verify_kmean.py input.txt kmeans.txt
 ```
 
 ---

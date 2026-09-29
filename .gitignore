@@ -1,21 +1,18 @@
 # Binaries & build outputs
-a2/a2
-OMP/main
-OMP/main_n
 omp_lhe
-cuda_lhe
+src/cuda/a2
 *.o
 *.so
 
 # Large generated datasets & text outputs
-OMP/input.txt
-OMP/knn.txt
-OMP/knn_n.txt
-OMP/knn_cuda.txt
-OMP/kmeans.txt
-OMP/kmeans_n.txt
-OMP/approx.knn.txt
-OMP/approx_knn_n.txt
+input.txt
+knn.txt
+knn_n.txt
+knn_cuda.txt
+kmeans.txt
+kmeans_n.txt
+approx.knn.txt
+approx_knn_n.txt
 *.out
 
 # Editor / OS files
