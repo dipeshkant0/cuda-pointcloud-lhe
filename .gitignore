@@ -1,0 +1,27 @@
+# Binaries & build outputs
+a2/a2
+OMP/main
+OMP/main_n
+omp_lhe
+cuda_lhe
+*.o
+*.so
+
+# Large generated datasets & text outputs
+OMP/input.txt
+OMP/knn.txt
+OMP/knn_n.txt
+OMP/knn_cuda.txt
+OMP/kmeans.txt
+OMP/kmeans_n.txt
+OMP/approx.knn.txt
+OMP/approx_knn_n.txt
+*.out
+
+# Editor / OS files
+.vscode/
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
